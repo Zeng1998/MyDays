@@ -87,6 +87,8 @@ class MainActivity : ComponentActivity() {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp)
                             ) {
+//                                Text(pagerState.currentPageOffsetFraction.toString())
+                                // TODO +0.25以上 右边的tab文字颜色变化 -0.25以下，左边的tab文字颜色变化
                                 for ((index, tab) in tabs.withIndex()) {
                                     Column(
                                         modifier = Modifier
@@ -95,15 +97,41 @@ class MainActivity : ComponentActivity() {
                                     ) {
                                         Text(
                                             text = tab,
-                                            color = if (index == pagerState.currentPage) MaterialTheme.colorScheme.primary else Color.Gray,
+                                            color = if (index == pagerState.currentPage) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else if (pagerState.currentPageOffsetFraction >= 0.25
+                                                && pagerState.currentPageOffsetFraction < 0.5
+                                                && index == pagerState.currentPage + 1
+                                                ||
+                                                pagerState.currentPageOffsetFraction <= -0.25
+                                                && pagerState.currentPageOffsetFraction > -0.5
+                                                && index == pagerState.currentPage - 1
+                                            ) {
+                                                Color(0xFF776c96)
+                                            } else {
+                                                Color.Gray
+                                            },
                                             fontWeight = if (index == pagerState.currentPage) FontWeight.Bold else FontWeight.Normal,
                                         )
-                                        Spacer(modifier=Modifier.height(4.dp))
+                                        Spacer(modifier = Modifier.height(4.dp))
                                         HorizontalDivider(
                                             modifier = Modifier
                                                 .width(48.dp),
-                                            thickness = 2.dp,
-                                            color = if (index == pagerState.currentPage) MaterialTheme.colorScheme.primary else Color.Transparent
+                                            thickness = if (index == pagerState.currentPage) 2.dp else 1.dp,
+                                            color = if (index == pagerState.currentPage) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else if (pagerState.currentPageOffsetFraction >= 0.25
+                                                && pagerState.currentPageOffsetFraction < 0.5
+                                                && index == pagerState.currentPage + 1
+                                                ||
+                                                pagerState.currentPageOffsetFraction <= -0.25
+                                                && pagerState.currentPageOffsetFraction > -0.5
+                                                && index == pagerState.currentPage - 1
+                                            ) {
+                                                Color(0xFFbbb6cb)
+                                            } else {
+                                                Color.Transparent
+                                            }
                                         )
 
                                     }
@@ -120,18 +148,13 @@ class MainActivity : ComponentActivity() {
                             state = pagerState,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.Yellow)
                         ) { page ->
                             // Our page content
                             LazyColumn(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(Color.Green),
+                                    .fillMaxSize(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
-                                item{
-                                    Text(pagerState.currentPageOffsetFraction.toString())
-                                }
                                 items(100) { index ->
                                     Text(text = "Item $index")
                                 }
