@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.zxc.mydays.ui.theme.MyDaysTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
@@ -44,6 +49,7 @@ class MainActivity : ComponentActivity() {
             MyDaysTheme {
                 val tabs = listOf("小记", "待办", "日常")
                 val pagerState = rememberPagerState(pageCount = { 3 })
+                val scope = rememberCoroutineScope()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
@@ -84,7 +90,17 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 for ((index, tab) in tabs.withIndex()) {
                                     Column(
-                                        modifier = Modifier.wrapContentWidth(),
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .clickable(
+                                                onClick = {
+                                                    scope.launch {
+                                                        pagerState.animateScrollToPage(index)
+                                                    }
+                                                },
+                                                indication = null,
+                                                interactionSource = remember { MutableInteractionSource() }
+                                            ),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                     ) {
                                         val activeTab = index == pagerState.currentPage
@@ -149,12 +165,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
