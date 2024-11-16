@@ -38,10 +38,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -84,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(48.dp),
+                                .height(42.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -159,39 +164,76 @@ class MainActivity : ComponentActivity() {
                             state = pagerState,
                             modifier = Modifier.fillMaxSize(),
                         ) { page ->
+                            var showFullTagPanel by remember { mutableStateOf(false) }
+                            val tags = listOf(
+                                "日记",
+                                "菜谱",
+                                "tag1",
+                                "tag2",
+                                "tag3",
+                                "tag4",
+                                "tag5",
+                                "tag6",
+                                "tag7",
+                                "tag8",
+                                "tag9",
+                                "tag10"
+                            )
+                            var selectedTagIndex by remember { mutableIntStateOf(0) }
                             Column(modifier = Modifier.fillMaxSize()) {
-                                Box(
+                                Row(
                                     modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .height(42.dp),
+                                        .padding(start = 16.dp, end = 8.dp)
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     FlowRow(
                                         modifier = Modifier
-                                            .padding(end = 36.dp)
-                                            .fillMaxWidth()
-                                            .wrapContentHeight()
-                                            .align(Alignment.CenterStart)
-                                            .horizontalScroll(rememberScrollState())
+                                            .weight(1f)
+                                            .let {
+                                                if (showFullTagPanel) {
+                                                    it
+                                                } else {
+                                                    it.horizontalScroll(rememberScrollState())
+                                                }
+                                            },
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     ) {
-                                        for (i in 0..10) {
+                                        tags.forEachIndexed { index, tag ->
                                             Text(
-                                                text = "#tag$i",
-                                                modifier = Modifier.padding(8.dp),
+                                                text = "#${tag}",
+                                                color = if (index == selectedTagIndex) {
+                                                    MaterialTheme.colorScheme.primary
+                                                } else {
+                                                    Color.Unspecified
+                                                },
+                                                fontWeight = if (index == selectedTagIndex) {
+                                                    FontWeight.Bold
+                                                } else {
+                                                    FontWeight.Normal
+                                                },
+                                                modifier = Modifier.clickable(
+                                                    onClick = {
+                                                        selectedTagIndex = index
+                                                    }
+                                                )
                                             )
                                         }
                                     }
                                     Row(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterEnd)
-                                            .width(36.dp)
-                                            .background(MaterialTheme.colorScheme.surface),
+                                        modifier = Modifier.width(36.dp),
                                         horizontalArrangement = Arrangement.Center,
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.chevron_down),
+                                            painter = if (showFullTagPanel) painterResource(R.drawable.chevron_up)
+                                            else painterResource(R.drawable.chevron_down),
                                             contentDescription = null,
                                             modifier = Modifier.clickable(
-                                                onClick = {}
+                                                onClick = {
+                                                    showFullTagPanel = !showFullTagPanel
+                                                }
                                             )
                                         )
                                     }
