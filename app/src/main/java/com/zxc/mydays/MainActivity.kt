@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -51,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zxc.mydays.memo.MemoCard
 import com.zxc.mydays.ui.theme.MyDaysTheme
 import kotlinx.coroutines.launch
 
@@ -183,6 +186,7 @@ class MainActivity : ComponentActivity() {
                             Column(modifier = Modifier.fillMaxSize()) {
                                 Row(
                                     modifier = Modifier
+                                        .wrapContentHeight()
                                         .padding(start = 16.dp, end = 8.dp)
                                         .fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -236,6 +240,39 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             )
                                         )
+                                    }
+                                }
+                                LazyVerticalStaggeredGrid(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                                    columns = StaggeredGridCells.Fixed(2),
+                                    verticalItemSpacing= 16.dp,
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                    items(100) { index ->
+                                        when(index%3){
+                                            0 -> MemoCard(
+                                                title = "标题文本",
+                                                content = "正文小一点的文本",
+                                                tags = listOf("标签","tag"),
+                                                createTs = 1731761442000,
+                                                updateTs = 1731761442000
+                                            )
+                                            1 -> MemoCard(
+                                                title = "标题文本",
+                                                content = "正文小一点的文本",
+                                                tags = listOf("标签","tag"),
+                                                createTs = 1430761442000,
+                                                updateTs = 1430761442000
+                                            )
+                                            else -> MemoCard(
+                                                content = "只有内容",
+                                                createTs = 1731761442000,
+                                                updateTs = 1731761442000
+                                            )
+                                        }
+
                                     }
                                 }
                                 LazyColumn(
