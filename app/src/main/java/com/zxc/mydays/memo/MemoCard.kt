@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -15,10 +19,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.util.DebugLogger
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
@@ -40,11 +49,17 @@ fun adaptiveTimeFormat(timestamp: Long): String {
     }
 }
 
+fun ellipseText(text: String, length: Int): String {
+    return if (text.length > length) text.substring(0, length) + "..."
+    else text
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MemoCard(
     title: String? = null,
-    content: String? = null, // TODO 自动截断+省略号
+    content: String? = null, // TODO 可配置
+    contentLengthLimit: Int = 30,
     image: String? = null,
     tags: List<String>? = null,
     createTs: Long,
@@ -57,20 +72,42 @@ fun MemoCard(
             modifier = Modifier.padding(8.dp),
         ) {
             title?.let { Text(text = it, fontSize = 18.sp, fontWeight = FontWeight.Bold) }
-            content?.let { Text(text = it, fontSize = 16.sp) }
+            image?.let {
+                // TODO temp image from online
+                val imageLoader = LocalContext.current.imageLoader.newBuilder()
+                    .logger(DebugLogger())
+                    .build()
+                Spacer(modifier = Modifier.height(4.dp))
+                AsyncImage(
+                    imageLoader = imageLoader,
+                    model = "https://i.ibb.co/RP1N4Qs/temp.png",
+                    contentDescription = null,
+                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                )
+            }
+            content?.let {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = ellipseText(it, contentLengthLimit), fontSize = 16.sp)
+            }
             tags?.let {
+                Spacer(modifier = Modifier.height(4.dp))
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     it.forEach {
-                        Text(text = "#$it", fontSize = 14.sp, color = Color.Gray)
+                        Text(
+                            text = "#$it",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (updateTs == createTs) "创建于 ${adaptiveTimeFormat(createTs)}"
                 else "更新于 ${adaptiveTimeFormat(updateTs)}",
-                fontSize = 14.sp, color = MaterialTheme.colorScheme.primary
+                fontSize = 13.sp, color = Color.Gray
             )
         }
     }
