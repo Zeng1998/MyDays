@@ -54,6 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.zxc.mydays.common.TopTagPanel
 import com.zxc.mydays.memo.MemoCard
 import com.zxc.mydays.ui.theme.MyDaysTheme
 import kotlinx.coroutines.delay
@@ -174,7 +175,6 @@ class MainActivity : ComponentActivity() {
                             state = pagerState,
                             modifier = Modifier.fillMaxSize(),
                         ) { page ->
-                            var showFullTagPanel by remember { mutableStateOf(false) }
                             val tags = listOf(
                                 "日记",
                                 "菜谱",
@@ -191,65 +191,11 @@ class MainActivity : ComponentActivity() {
                             )
                             var selectedTagIndex by remember { mutableIntStateOf(0) }
                             Column(modifier = Modifier.fillMaxSize()) {
-                                Row(
-                                    modifier = Modifier
-                                        .wrapContentHeight()
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .padding(start = 16.dp, end = 8.dp)
-                                        .fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                ) {
-                                    FlowRow(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .let {
-                                                if (showFullTagPanel) {
-                                                    it
-                                                } else {
-                                                    it.horizontalScroll(rememberScrollState())
-                                                }
-                                            },
-                                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    ) {
-                                        tags.forEachIndexed { index, tag ->
-                                            Text(
-                                                text = "#${tag}",
-                                                color = if (index == selectedTagIndex) {
-                                                    MaterialTheme.colorScheme.primary
-                                                } else {
-                                                    Color.Unspecified
-                                                },
-                                                fontWeight = if (index == selectedTagIndex) {
-                                                    FontWeight.Bold
-                                                } else {
-                                                    FontWeight.Normal
-                                                },
-                                                modifier = Modifier.clickable(
-                                                    onClick = {
-                                                        selectedTagIndex = index
-                                                    }
-                                                )
-                                            )
-                                        }
-                                    }
-                                    Row(
-                                        modifier = Modifier.width(36.dp),
-                                        horizontalArrangement = Arrangement.Center,
-                                    ) {
-                                        Icon(
-                                            painter = if (showFullTagPanel) painterResource(R.drawable.chevron_up)
-                                            else painterResource(R.drawable.chevron_down),
-                                            contentDescription = null,
-                                            modifier = Modifier.clickable(
-                                                onClick = {
-                                                    showFullTagPanel = !showFullTagPanel
-                                                }
-                                            )
-                                        )
-                                    }
-                                }
+                                TopTagPanel(
+                                    tags = tags,
+                                    selectedTagIndex = selectedTagIndex,
+                                    selectedTagIndexChange = { selectedTagIndex = it }
+                                )
                                 val pullRefreshState = rememberPullToRefreshState()
                                 if (pullRefreshState.isRefreshing) {
                                     LaunchedEffect(true) {
