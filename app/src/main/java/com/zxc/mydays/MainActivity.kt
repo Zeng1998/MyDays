@@ -23,23 +23,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,17 +47,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.zxc.mydays.memo.MemoCard
 import com.zxc.mydays.ui.theme.MyDaysTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+    @OptIn(
+        ExperimentalFoundationApi::class, ExperimentalLayoutApi::class,
+        ExperimentalMaterial3Api::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -92,6 +97,8 @@ class MainActivity : ComponentActivity() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .zIndex(1f)
+                                .background(MaterialTheme.colorScheme.surface)
                                 .height(42.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -187,6 +194,7 @@ class MainActivity : ComponentActivity() {
                                 Row(
                                     modifier = Modifier
                                         .wrapContentHeight()
+                                        .background(MaterialTheme.colorScheme.surface)
                                         .padding(start = 16.dp, end = 8.dp)
                                         .fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -242,71 +250,91 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
-                                LazyVerticalStaggeredGrid(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    columns = StaggeredGridCells.Fixed(2),
-                                    verticalItemSpacing= 16.dp,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                ) {
-                                    items(100) { index ->
-                                        when(index%7){
-                                            0 -> MemoCard(
-                                                title = "标题文本",
-                                                content = "正文小一点的文本",
-                                                tags = listOf("标签","tag"),
-                                                createTs = 1731761442000,
-                                                updateTs = 1731761442000
-                                            )
-                                            1 -> MemoCard(
-                                                title = "标题文本",
-                                                content = "正文小一点的文本",
-                                                tags = listOf("标签","tag"),
-                                                createTs = 1430761442000,
-                                                updateTs = 1430761442000
-                                            )
-                                            2 -> MemoCard(
-                                                title = "只有标题",
-                                                createTs = 1430761442000,
-                                                updateTs = 1430761442000
-                                            )
-                                            3 -> MemoCard(
-                                                content = "更新时间和创建时间不一样",
-                                                createTs = 1731761442000,
-                                                updateTs = 1731761443000
-                                            )
-                                            4 -> MemoCard(
-                                                title = "标题文本",
-                                                content = "长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本",
-                                                tags = listOf("标签","tag"),
-                                                createTs = 1731761442000,
-                                                updateTs = 1731761442000
-                                            )
-                                            5 -> MemoCard(
-                                                title = "带图片",
-                                                content = "长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本",
-                                                image = "test",
-                                                tags = listOf("标签","tag"),
-                                                createTs = 1731761442000,
-                                                updateTs = 1731761442000
-                                            )
-                                            else -> MemoCard(
-                                                content = "只有内容",
-                                                createTs = 1731761442000,
-                                                updateTs = 1731761442000
-                                            )
-                                        }
-
+                                val pullRefreshState = rememberPullToRefreshState()
+                                if (pullRefreshState.isRefreshing) {
+                                    LaunchedEffect(true) {
+                                        // fetch something
+                                        delay(1500)
+                                        pullRefreshState.endRefresh()
                                     }
                                 }
-                                LazyColumn(
-                                    modifier = Modifier
-                                        .fillMaxSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                Box(
+                                    Modifier
+                                        .nestedScroll(pullRefreshState.nestedScrollConnection)
+                                        .zIndex(-1f)
                                 ) {
-                                    items(100) { index ->
-                                        Text(text = "Item $index")
+                                    PullToRefreshContainer(
+                                        state = pullRefreshState,
+                                        modifier = Modifier
+                                            .align(Alignment.TopCenter)
+                                            .zIndex(0.5f),
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                    LazyVerticalStaggeredGrid(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(top = with(LocalDensity.current) { pullRefreshState.verticalOffset.toDp() })
+                                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                                        columns = StaggeredGridCells.Fixed(2),
+                                        verticalItemSpacing = 16.dp,
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    ) {
+                                        items(100) { index ->
+                                            when (index % 7) {
+                                                0 -> MemoCard(
+                                                    title = "标题文本",
+                                                    content = "正文小一点的文本",
+                                                    tags = listOf("标签", "tag"),
+                                                    createTs = 1731761442000,
+                                                    updateTs = 1731761442000
+                                                )
+
+                                                1 -> MemoCard(
+                                                    title = "标题文本",
+                                                    content = "正文小一点的文本",
+                                                    tags = listOf("标签", "tag"),
+                                                    createTs = 1430761442000,
+                                                    updateTs = 1430761442000
+                                                )
+
+                                                2 -> MemoCard(
+                                                    title = "只有标题",
+                                                    createTs = 1430761442000,
+                                                    updateTs = 1430761442000
+                                                )
+
+                                                3 -> MemoCard(
+                                                    content = "更新时间和创建时间不一样",
+                                                    createTs = 1731761442000,
+                                                    updateTs = 1731761443000
+                                                )
+
+                                                4 -> MemoCard(
+                                                    title = "标题文本",
+                                                    content = "长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本",
+                                                    tags = listOf("标签", "tag"),
+                                                    createTs = 1731761442000,
+                                                    updateTs = 1731761442000
+                                                )
+
+                                                5 -> MemoCard(
+                                                    title = "带图片",
+                                                    content = "长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本",
+                                                    image = "test",
+                                                    tags = listOf("标签", "tag"),
+                                                    createTs = 1731761442000,
+                                                    updateTs = 1731761442000
+                                                )
+
+                                                else -> MemoCard(
+                                                    content = "只有内容",
+                                                    createTs = 1731761442000,
+                                                    updateTs = 1731761442000
+                                                )
+                                            }
+
+                                        }
                                     }
                                 }
                             }
