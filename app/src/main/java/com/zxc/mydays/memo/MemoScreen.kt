@@ -1,34 +1,30 @@
 package com.zxc.mydays.memo
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.zxc.mydays.common.TopTagPanel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemoScreen(){
+fun MemoScreen() {
     val tags = listOf(
         "日记",
         "菜谱",
@@ -44,37 +40,33 @@ fun MemoScreen(){
         "tag10"
     )
     var selectedTagIndex by remember { mutableIntStateOf(0) }
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullRefreshState = rememberPullToRefreshState()
+    val coroutineScope = rememberCoroutineScope()
+    val onRefresh: () -> Unit = {
+        isRefreshing = true
+        coroutineScope.launch {
+            delay(2000)
+            isRefreshing = false
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopTagPanel(
             tags = tags,
             selectedTagIndex = selectedTagIndex,
             selectedTagIndexChange = { selectedTagIndex = it }
         )
-        val pullRefreshState = rememberPullToRefreshState()
-        if (pullRefreshState.isRefreshing) {
-            LaunchedEffect(true) {
-                // fetch something
-                delay(1500)
-                pullRefreshState.endRefresh()
-            }
-        }
-        Box(
-            Modifier
-                .nestedScroll(pullRefreshState.nestedScrollConnection)
-                .zIndex(-1f)
+        PullToRefreshBox(
+            modifier = Modifier,
+            state = pullRefreshState,
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
         ) {
-            PullToRefreshContainer(
-                state = pullRefreshState,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .zIndex(0.5f),
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            )
             LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = with(LocalDensity.current) { pullRefreshState.verticalOffset.toDp() })
+                    .padding(top = (pullRefreshState.distanceFraction * 128).dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 columns = StaggeredGridCells.Fixed(2),
                 verticalItemSpacing = 16.dp,
