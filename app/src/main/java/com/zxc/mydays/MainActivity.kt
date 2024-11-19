@@ -39,14 +39,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.zxc.mydays.memo.MemoScreen
+import com.zxc.mydays.todo.TodoScreen
 import com.zxc.mydays.ui.theme.MyDaysTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    @OptIn(
-        ExperimentalFoundationApi::class, ExperimentalLayoutApi::class,
-        ExperimentalMaterial3Api::class
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -159,6 +156,7 @@ class MainActivity : ComponentActivity() {
                         ) { page ->
                             when (page) {
                                 0 -> MemoScreen()
+                                1 -> TodoScreen()
                             }
                         }
                     }
