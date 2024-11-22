@@ -1,6 +1,8 @@
 package com.zxc.mydays.todo
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,34 +38,43 @@ fun TodoGroupPanel(
     Column(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Card(
+            elevation = CardDefaults.cardElevation(4.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                "$title $count",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
-            Icon(
-                painter = painterResource(
-                    if (collapsed) R.drawable.chevron_right
-                    else R.drawable.chevron_down
-                ),
-                contentDescription = null,
-                modifier = Modifier.clickable { collapsed = !collapsed })
-        }
-        if (!collapsed) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Card(
-                elevation = CardDefaults.cardElevation(4.dp),
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer),
             ) {
-                Column() {
-                    content()
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = {collapsed = !collapsed},
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        "$title $count",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.DarkGray
+                    )
+                    Icon(
+                        painter = painterResource(
+                            if (collapsed) R.drawable.chevron_right
+                            else R.drawable.chevron_down
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.clickable { collapsed = !collapsed })
                 }
+            }
+            if (!collapsed) {
+                content()
             }
         }
     }
