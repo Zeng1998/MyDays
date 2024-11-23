@@ -4,10 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -19,9 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoTaskItem(
     text: String,
@@ -31,7 +31,6 @@ fun TodoTaskItem(
     onCheck: (Boolean) -> Unit,
     onClick: () -> Unit,
 ) {
-    // TODO sub task item
     var checkState by remember { mutableStateOf(isChecked) }
     Row(
         modifier = Modifier
@@ -40,8 +39,9 @@ fun TodoTaskItem(
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
             Checkbox(
+                modifier = Modifier.padding(start = 16.dp, end = 8.dp),
                 checked = checkState,
                 onCheckedChange = {
                     checkState = it
