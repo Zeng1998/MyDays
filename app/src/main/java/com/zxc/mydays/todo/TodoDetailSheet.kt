@@ -1,6 +1,7 @@
 package com.zxc.mydays.todo
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,13 +68,6 @@ fun TodoDetailSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.list_check),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(36.dp),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
                 BasicTextField(
                     modifier = Modifier
                         .focusRequester(titleFocusRequester)
@@ -105,9 +99,6 @@ fun TodoDetailSheet(
                 )
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            // TODO
-            // 小icon，蓝色无表情进行中，绿色笑脸已完成，红色哭脸已废弃
-
             Row(
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -149,12 +140,9 @@ fun TodoDetailSheet(
                 Icon(
                     painter = painterResource(id = R.drawable.plus),
                     contentDescription = null,
+                    modifier = Modifier.clickable {  }
                 )
             }
-            // 进行中 1/5
-            // 已完成 5/5
-            // 已废弃 x/x
-            // 按钮，新增
             Column(
                 modifier = Modifier.padding(start = 4.dp)
             ) {
