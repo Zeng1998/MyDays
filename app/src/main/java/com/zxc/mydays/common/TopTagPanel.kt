@@ -75,7 +75,7 @@ fun TopTagPanel(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val iconId = if (showFullTagPanel) R.drawable.chevron_up else R.drawable.chevron_down
+            val iconId = if (showFullTagPanel) R.drawable.chevron_up else R.drawable.ellipsis
             Icon(
                 painter = painterResource(id = iconId),
                 contentDescription = null,
