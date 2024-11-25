@@ -1,12 +1,7 @@
 package com.zxc.mydays
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -16,17 +11,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.zxc.mydays.common.MyScrollableTabRow
+import com.zxc.mydays.common.MyTopAppBar
 import com.zxc.mydays.memo.MemoScreen
 import com.zxc.mydays.todo.TodoScreen
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen() {
     val tabs = listOf("小记", "待办", "日常")
     val pagerState = rememberPagerState(pageCount = { 3 })
     Scaffold(
@@ -50,28 +43,25 @@ fun HomeScreen(){
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zIndex(1f)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .height(42.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            MyTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(R.drawable.menu),
+                            contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(R.drawable.search),
+                            contentDescription = null
+                        )
+                    }
+                }
             ) {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(R.drawable.menu),
-                        contentDescription = null
-                    )
-                }
                 MyScrollableTabRow(tabs = tabs, pagerState = pagerState)
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(R.drawable.search),
-                        contentDescription = null
-                    )
-                }
             }
             HorizontalPager(
                 state = pagerState,
