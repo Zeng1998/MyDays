@@ -20,7 +20,7 @@ import com.zxc.mydays.todo.TodoScreen
 
 @Composable
 fun HomeScreen() {
-    val tabs = listOf("小记", "待办", "日常")
+    val tabs = listOf("小记", "待办")
     val pagerState = rememberPagerState(pageCount = { 3 })
     Scaffold(
         modifier = Modifier.fillMaxSize(),
