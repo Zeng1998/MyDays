@@ -52,19 +52,17 @@ fun TodoScreen() {
         TodoGroupPanel("进行中", 5) {
             TodoTaskItem(
                 text = "任务5",
-                isChecked = false,
+                hasSubItems = true,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
             TodoTaskItem(
                 text = "任务6",
-                isChecked = false,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
             TodoTaskItem(
                 text = "任务7",
-                isChecked = false,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
@@ -75,21 +73,22 @@ fun TodoScreen() {
                 text = "任务1",
                 disabled = true,
                 isChecked = true,
-                onCheck = {},
+                checkEnabled = false,
                 onClick = { showBottomSheet = true }
             )
             TodoTaskItem(
                 text = "任务3",
                 disabled = true,
+                hasSubItems = true,
                 isChecked = true,
-                onCheck = {},
+                checkEnabled = false,
                 onClick = { showBottomSheet = true }
             )
             TodoTaskItem(
                 text = "任务4",
                 disabled = true,
                 isChecked = true,
-                onCheck = {},
+                checkEnabled = false,
                 onClick = { showBottomSheet = true }
             )
         }
@@ -99,7 +98,6 @@ fun TodoScreen() {
                 text = "任务2",
                 disabled = true,
                 deleted = true,
-                isChecked = false,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
@@ -107,7 +105,6 @@ fun TodoScreen() {
                 text = "task",
                 disabled = true,
                 deleted = true,
-                isChecked = false,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
@@ -115,7 +112,6 @@ fun TodoScreen() {
                 text = "删除",
                 disabled = true,
                 deleted = true,
-                isChecked = false,
                 onCheck = {},
                 onClick = { showBottomSheet = true }
             )
