@@ -1,20 +1,15 @@
 package com.zxc.mydays.memo
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,11 +23,9 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.util.DebugLogger
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 fun adaptiveTimeFormat(timestamp: Long): String {
@@ -58,8 +51,8 @@ fun ellipseText(text: String, length: Int): String {
 @Composable
 fun MemoCard(
     title: String? = null,
-    content: String? = null, // TODO 可配置
-    contentLengthLimit: Int = 30,
+    content: String? = null,
+    contentLengthLimit: Int = 30, // TODO 可配置
     image: String? = null,
     tags: List<String>? = null,
     createTs: Long,
@@ -69,28 +62,30 @@ fun MemoCard(
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(10.dp),
         ) {
-            title?.let { Text(text = it, fontSize = 18.sp, fontWeight = FontWeight.Bold) }
+            title?.let {
+                Text(text = it, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
+            }
             image?.let {
                 // TODO temp image from online
                 val imageLoader = LocalContext.current.imageLoader.newBuilder()
                     .logger(DebugLogger())
                     .build()
-                Spacer(modifier = Modifier.height(4.dp))
                 AsyncImage(
                     imageLoader = imageLoader,
                     model = "https://i.ibb.co/RP1N4Qs/temp.png",
                     contentDescription = null,
                     modifier = Modifier.clip(RoundedCornerShape(8.dp))
                 )
+                Spacer(modifier = Modifier.height(4.dp))
             }
             content?.let {
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(text = ellipseText(it, contentLengthLimit), fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(4.dp))
             }
             tags?.let {
-                Spacer(modifier = Modifier.height(4.dp))
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
@@ -102,8 +97,8 @@ fun MemoCard(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(4.dp))
             }
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (updateTs == createTs) "创建于 ${adaptiveTimeFormat(createTs)}"
                 else "更新于 ${adaptiveTimeFormat(updateTs)}",
