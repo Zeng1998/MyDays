@@ -13,13 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavHostController
 import com.zxc.mydays.common.MyScrollableTabRow
 import com.zxc.mydays.common.MyTopAppBar
 import com.zxc.mydays.memo.MemoScreen
 import com.zxc.mydays.todo.TodoScreen
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController:NavHostController) {
     val tabs = listOf("小记", "待办")
     val pagerState = rememberPagerState(pageCount = { 2 })
     Scaffold(
@@ -68,7 +69,7 @@ fun HomeScreen() {
                 modifier = Modifier.fillMaxSize(),
             ) { page ->
                 when (page) {
-                    0 -> MemoScreen()
+                    0 -> MemoScreen(navController)
                     1 -> TodoScreen()
                 }
             }

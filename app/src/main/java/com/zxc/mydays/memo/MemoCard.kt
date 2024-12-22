@@ -57,9 +57,11 @@ fun MemoCard(
     tags: List<String>? = null,
     createTs: Long,
     updateTs: Long,
+    onClick: () -> Unit = {},
 ) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
+        onClick = onClick,
     ) {
         Column(
             modifier = Modifier.padding(10.dp),

@@ -17,7 +17,7 @@ import androidx.compose.ui.zIndex
 fun MyTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit = {},
 ) {
     Row(
         modifier = Modifier

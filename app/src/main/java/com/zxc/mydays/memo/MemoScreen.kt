@@ -18,13 +18,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.zxc.mydays.common.TopTagPanel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemoScreen() {
+fun MemoScreen(navController:NavHostController) {
     val tags = listOf(
         "日记",
         "菜谱",
@@ -79,7 +80,10 @@ fun MemoScreen() {
                             content = "正文小一点的文本",
                             tags = listOf("标签", "tag"),
                             createTs = 1731761442000,
-                            updateTs = 1731761442000
+                            updateTs = 1731761442000,
+                            onClick = {
+                                navController.navigate("memo/detail")
+                            }
                         )
 
                         1 -> MemoCard(
