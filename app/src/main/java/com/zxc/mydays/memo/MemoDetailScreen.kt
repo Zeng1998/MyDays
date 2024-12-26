@@ -28,7 +28,7 @@ fun MemoDetailScreen() {
                 navigationIcon = {
                     IconButton(onClick = {}) {
                         Icon(
-                            painter = painterResource(R.drawable.menu),
+                            painter = painterResource(R.drawable.arrow_left),
                             contentDescription = null
                         )
                     }
@@ -36,13 +36,19 @@ fun MemoDetailScreen() {
                 actions = {
                     IconButton(onClick = {}) {
                         Icon(
-                            painter = painterResource(R.drawable.search),
+                            painter = painterResource(R.drawable.ellipsis_vertical),
                             contentDescription = null
                         )
                     }
                 }
             )
             Text("detail")
+            // title textfield
+            // date
+            // tags
+            // content textfield (block editor)
+            // toolbar
+            // 图片（下拉统一管理，或block）
         }
     }
 }
